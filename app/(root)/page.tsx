@@ -1,7 +1,9 @@
 'use client'
-import { useBrowserState, GenomeBrowser, BigWigTrackProps, DefaultBigWig, BrowserActionType, TranscriptTrack, Controls } from "@weng-lab/genomebrowser";
+import { useBrowserState, GenomeBrowser, BigWigTrackProps, DefaultBigWig, BrowserActionType, TranscriptTrack, Controls, DisplayMode, DefaultBigBed, BigBedTrackProps } from "@weng-lab/genomebrowser";
 import { bigWigExample, bigBedExample, transcriptExample } from "./example";
 import useMount from "@/app/hooks/useMount";
+import TrackModal from "../components/trackModal";
+import { useState } from "react";
 
 const colors = ["#e60049", "#0bb4ff", "#50e991", "#e6d800", "#9b19f5", "#ffa300", "#dc0ab4", "#b3d4ff", "#00bfa0"]
 
@@ -22,21 +24,20 @@ export default function Browser() {
     useMount(() => {
         browserDispatch({ type: BrowserActionType.ADD_TRACK, track: bigBedExample });
     });
-
+    const [isOpen, setIsOpen] = useState(false);
     return (
         <div className="w-full h-screen">
             <div className="flex flex-col items-center">
-                <div className="flex items-center gap-4 pb-2">
+                <div className="flex items-center justify-center w-full pb-2 relative">
                     <button
-                        className="px-12 py-3 text-lg shift-button"
-                        onClick={() => browserDispatch({
-                            type: BrowserActionType.ADD_TRACK,
-                            track: { ...bigBedExample, id: randomId(), color: colors[Math.floor(Math.random() * colors.length)] }
-                        })}
+                        className="px-6 py-3 text-xl font-bold bg-white rounded-md shadow-lg absolute left-1/4"
+                        onClick={() => {
+                            setIsOpen(true);
+                        }}
                     >
                         Add Track
                     </button>
-                    <div className="relative rounded-lg shadow-md bg-white p-2 w-fit">
+                    <div className="rounded-lg shadow-md bg-white p-2 w-fit font-bold">
                         <Controls domain={browserState.domain} dispatch={browserDispatch} />
                     </div>
                 </div>
@@ -49,6 +50,46 @@ export default function Browser() {
                     <strong>Note:</strong> This page is a demo and there may be bugs.
                 </div>
             </div>
+            <TrackModal
+                isOpen={isOpen}
+                onClose={() => setIsOpen(false)}
+                browserDispatch={(url, name, color) => {
+                    const track = createTrack(url, name, color);
+                    browserDispatch({ type: BrowserActionType.ADD_TRACK, track: track });
+                    setIsOpen(false);
+                }}
+            />
         </div>
     );
 }
+
+function createTrack(url: string, name: string, color: string) {
+    const fileExtension = url.split('.').pop();
+    switch (fileExtension) {
+        case "bigWig":
+        case "bw":
+            return {
+                ...DefaultBigWig,
+                title: name,
+                id: randomId(),
+                color: color,
+                url: url,
+                height: 100,
+            } as BigWigTrackProps
+        case "bigBed" || "bb":
+            return {
+                ...DefaultBigBed,
+                title: name,
+                id: randomId(),
+                color: color,
+                url: url,
+                height: 75,
+                rowHeight: 12,
+            } as BigBedTrackProps
+        default:
+            console.log("Error making track");
+            return bigWigExample
+    }
+}
+
+

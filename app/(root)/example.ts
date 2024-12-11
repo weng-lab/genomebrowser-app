@@ -38,5 +38,8 @@ export const transcriptExample: TranscriptTrackProps = {
     assembly: "GRCh38",
     queryType: "gene",
     version: TranscriptHumanVersion.V47,
-    height: 100
+    height: 100,
+    props: {
+        geneName: "OR51B4",
+    }
 }
