@@ -6,5 +6,5 @@ export default function useMount(callback: () => void) {
         if (loaded.current) return;
         callback();
         loaded.current = true;
-    }, []);
+    }, [callback]);
 }

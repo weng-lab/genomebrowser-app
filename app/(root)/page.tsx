@@ -1,11 +1,9 @@
 'use client'
-import { useBrowserState, GenomeBrowser, BigWigTrackProps, DefaultBigWig, BrowserActionType, TranscriptTrack, Controls, DisplayMode, DefaultBigBed, BigBedTrackProps } from "@weng-lab/genomebrowser";
+import { useBrowserState, GenomeBrowser, BigWigTrackProps, DefaultBigWig, BrowserActionType, TranscriptTrack, Controls, DefaultBigBed, BigBedTrackProps } from "@weng-lab/genomebrowser";
 import { bigWigExample, bigBedExample, transcriptExample } from "./example";
 import useMount from "@/app/hooks/useMount";
 import TrackModal from "../components/trackModal";
 import { useState } from "react";
-
-const colors = ["#e60049", "#0bb4ff", "#50e991", "#e6d800", "#9b19f5", "#ffa300", "#dc0ab4", "#b3d4ff", "#00bfa0"]
 
 function randomId() {
     return Math.random().toString(36).substring(2, 6)
@@ -76,7 +74,8 @@ function createTrack(url: string, name: string, color: string) {
                 url: url,
                 height: 100,
             } as BigWigTrackProps
-        case "bigBed" || "bb":
+        case "bigBed":
+        case "bb":
             return {
                 ...DefaultBigBed,
                 title: name,
