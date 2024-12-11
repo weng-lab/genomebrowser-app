@@ -1,20 +1,8 @@
 # When using yarn link
 
-1. `yarn link` in the root of the package
-2. `yarn link @weng-lab/genomebrowser` in the app
+remove `--turbo` from the build command in package.json
 
-inside next.config.ts
-```
-experimental: {
-    turbo: {
-        resolveAlias: {
-            "@weng-lab/genomebrowser": path.join(__dirname, "../genomebrowser-components/dist/gbc.js").replace(/\\/g, "/")
-        }
-    }
-}
-```
+`yarn link` in the root of the package
+`yarn link @weng-lab/genomebrowser` in the app
 
-inside package.json
-```
-    "@weng-lab/genomebrowser": "link:../genomebrowser-components"
-```
+remove `@weng-lab/genomebrowser` from the package.json in the app
