@@ -14,7 +14,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-    title: "UMMS Genome Browser",
+    title: "UMass Genome Browser",
     description: "UMass Chan Medical School Genome Browser developed by the Weng and Moore Labs",
 };
 
