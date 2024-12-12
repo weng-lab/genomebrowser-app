@@ -13,7 +13,7 @@ function randomId() {
 export const bigWigExample: BigWigTrackProps = {
     ...DefaultBigWig,
     id: randomId(),
-    title: "bigwig",
+    title: "DNase-seq Signal",
     height: 100,
     url: "https://downloads.wenglab.org/DNAse_All_ENCODE_MAR20_2024_merged.bw",
     color: colors[Math.floor(Math.random() * colors.length)]
@@ -22,7 +22,7 @@ export const bigWigExample: BigWigTrackProps = {
 export const bigBedExample: BigBedTrackProps = {
     ...DefaultBigBed,
     id: randomId(),
-    title: "bigbed",
+    title: "ENCODE V4 cCREs",
     height: 75,
     rowHeight: 12,
     color: colors[Math.floor(Math.random() * colors.length)],
@@ -32,7 +32,7 @@ export const bigBedExample: BigBedTrackProps = {
 export const transcriptExample: TranscriptTrackProps = {
     ...DefaultTranscript,
     id: randomId(),
-    title: "transcript",
+    title: "GENCODE Genes",
     rowHeight: 12,
     color: colors[Math.floor(Math.random() * colors.length)],
     assembly: "GRCh38",
@@ -40,6 +40,6 @@ export const transcriptExample: TranscriptTrackProps = {
     version: TranscriptHumanVersion.V47,
     height: 100,
     props: {
-        geneName: "OR51B4",
+        // geneName: "OR51B4",
     }
 }
