@@ -1,9 +1,10 @@
 'use client'
-import { useBrowserState, GenomeBrowser, BigWigTrackProps, DefaultBigWig, BrowserActionType, TranscriptTrack, Controls, DefaultBigBed, BigBedTrackProps } from "@weng-lab/genomebrowser";
+import { useBrowserState, GenomeBrowser, BigWigTrackProps, DefaultBigWig, BrowserActionType, TranscriptTrack, DefaultBigBed, BigBedTrackProps } from "@weng-lab/genomebrowser";
 import { bigWigExample, bigBedExample, transcriptExample } from "./example";
 import useMount from "@/app/hooks/useMount";
 import TrackModal from "../components/trackModal";
 import { useState } from "react";
+import ControlSection from "./controls";
 
 function randomId() {
     return Math.random().toString(36).substring(2, 6)
@@ -15,7 +16,6 @@ export default function Browser() {
         width: 1500,
         tracks: [bigWigExample],
         highlights: [
-            { domain: { chromosome: "chr11", start: 5280000, end: 5290000 }, color: "red" }
         ]
     });
 
@@ -25,27 +25,16 @@ export default function Browser() {
     const [isOpen, setIsOpen] = useState(false);
     return (
         <div className="w-full h-screen">
+            <div className="flex flex-row pl-4 mb-2 h-10 bg-[#000F9F] text-white drop-shadow-2xl font-bold items-center justify-center">
+                UMass Chan Genome Browser on Human (GRCh38/hg38)
+
+            </div>
             <div className="flex flex-col items-center">
-                <div className="flex items-center justify-center w-full pb-2 relative">
-                    <button
-                        className="px-6 py-3 text-xl font-bold bg-white rounded-md shadow-lg absolute left-1/4"
-                        onClick={() => {
-                            setIsOpen(true);
-                        }}
-                    >
-                        Add Track
-                    </button>
-                    <div className="rounded-lg shadow-md bg-white p-2 w-fit font-bold">
-                        <Controls domain={browserState.domain} dispatch={browserDispatch} />
-                    </div>
-                </div>
+                <ControlSection browserState={browserState} browserDispatch={browserDispatch} setIsOpen={setIsOpen} />
                 <div className="shadow-2xl overflow-hidden">
                     <GenomeBrowser browserState={browserState} browserDispatch={browserDispatch}>
                         <TranscriptTrack {...transcriptExample} />
                     </GenomeBrowser>
-                </div>
-                <div className="mt-5 p-2.5 border border-red-500 rounded-md bg-red-50 text-red-700">
-                    <strong>Note:</strong> This page is a demo and there may be bugs.
                 </div>
             </div>
             <TrackModal
