@@ -32,7 +32,7 @@ export default function Browser() {
             <div className="flex flex-col items-center">
                 <ControlSection browserState={browserState} browserDispatch={browserDispatch} setIsOpen={setIsOpen} />
                 <div className="shadow-2xl overflow-hidden">
-                    <GenomeBrowser browserState={browserState} browserDispatch={browserDispatch}>
+                    <GenomeBrowser width={"100%"} browserState={browserState} browserDispatch={browserDispatch}>
                         <TranscriptTrack {...transcriptExample} />
                     </GenomeBrowser>
                 </div>
