@@ -1,3 +1,5 @@
+'use client'
+
 import { BrowserAction, BrowserState, Controls } from "@weng-lab/genomebrowser";
 import { Dispatch } from "react";
 

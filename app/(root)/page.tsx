@@ -1,10 +1,11 @@
 'use client'
-import { useBrowserState, GenomeBrowser, BigWigTrackProps, DefaultBigWig, BrowserActionType, TranscriptTrack, DefaultBigBed, BigBedTrackProps } from "@weng-lab/genomebrowser";
+import { useBrowserState, GenomeBrowser, BigWigTrackProps, DefaultBigWig, BrowserActionType, DefaultBigBed, BigBedTrackProps, GQLWrapper } from "@weng-lab/genomebrowser";
 import { bigWigExample, bigBedExample, transcriptExample } from "./example";
-import useMount from "@/app/hooks/useMount";
 import TrackModal from "../components/trackModal";
 import { useState } from "react";
 import ControlSection from "./controls";
+import TrackHub from "./trackHub";
+
 
 function randomId() {
     return Math.random().toString(36).substring(2, 6)
@@ -14,27 +15,28 @@ export default function Browser() {
     const [browserState, browserDispatch] = useBrowserState({
         domain: { chromosome: "chr11", start: 5220000, end: 5420000 },
         width: 1500,
-        tracks: [bigWigExample],
+        tracks: [transcriptExample, bigBedExample, bigWigExample],
         highlights: [
         ]
     });
 
-    useMount(() => {
-        browserDispatch({ type: BrowserActionType.ADD_TRACK, track: bigBedExample });
-    });
+    // useMount(() => {
+    //     browserDispatch({ type: BrowserActionType.ADD_TRACK, track: bigBedExample });
+    // });
     const [isOpen, setIsOpen] = useState(false);
+
     return (
         <div className="w-full h-screen">
             <div className="flex flex-row pl-4 mb-2 h-10 bg-[#000F9F] text-white drop-shadow-2xl font-bold items-center justify-center">
                 UMass Chan Genome Browser on Human (GRCh38/hg38)
-
             </div>
             <div className="flex flex-col items-center">
                 <ControlSection browserState={browserState} browserDispatch={browserDispatch} setIsOpen={setIsOpen} />
-                <div className="shadow-2xl overflow-hidden">
-                    <GenomeBrowser width={"100%"} browserState={browserState} browserDispatch={browserDispatch}>
-                        <TranscriptTrack {...transcriptExample} />
-                    </GenomeBrowser>
+                <div className="shadow-2xl w-[90%] overflow-hidden">
+                    <GQLWrapper>
+                        <GenomeBrowser width={"100%"} browserState={browserState} browserDispatch={browserDispatch}>
+                        </GenomeBrowser>
+                    </GQLWrapper>
                 </div>
             </div>
             <TrackModal
