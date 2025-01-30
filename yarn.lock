@@ -477,10 +477,10 @@
   resolved "https://registry.yarnpkg.com/@ungap/structured-clone/-/structured-clone-1.2.0.tgz#756641adb587851b5ccb3e095daf27ae581c8406"
   integrity sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==
 
-"@weng-lab/genomebrowser@^0.0.10":
-  version "0.0.10"
-  resolved "https://registry.yarnpkg.com/@weng-lab/genomebrowser/-/genomebrowser-0.0.10.tgz#c84bbcaf880c6263b6531400db2164a0dcdcbb85"
-  integrity sha512-p5/P+0jGAFxKm7EdMsQoGMlwns6TM1u6WQs3+Lc6WptMLXI7UNOsgNe+911pg3LEsxZxcDgIscRtpewCw1pozw==
+"@weng-lab/genomebrowser@^0.0.13":
+  version "0.0.13"
+  resolved "https://registry.yarnpkg.com/@weng-lab/genomebrowser/-/genomebrowser-0.0.13.tgz#aa8d4a15dcd7b84eafb52e1fbbb19976e5c30146"
+  integrity sha512-HolYMpUY1lYdnCFjrJM6QgsXrRsmjZ8XVZQhGReUVhgghMtXBo1y5nlmq+Wb9VbsL/GhPASnQY9OCehczDi3FQ==
   dependencies:
     "@apollo/client" "^3.11.10"
     bigwig-reader "^1.3.1"

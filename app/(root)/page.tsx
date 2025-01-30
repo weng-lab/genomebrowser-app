@@ -1,9 +1,9 @@
 'use client'
-import { useBrowserState, GenomeBrowser, BigWigTrackProps, DefaultBigWig, BrowserActionType, TranscriptTrack, DefaultBigBed, BigBedTrackProps } from "@weng-lab/genomebrowser";
-import { bigWigExample, bigBedExample, transcriptExample } from "./example";
+import { useBrowserState, GenomeBrowser, BigWigTrackProps, DefaultBigWig, BrowserActionType, TranscriptTrack, DefaultBigBed, BigBedTrackProps, GQLWrapper } from "@weng-lab/genomebrowser";
+import { bigWigExample, bigBedExample, transcriptExample, importanceExample, phyloPExample, motifExample } from "./example";
 import useMount from "@/app/hooks/useMount";
 import TrackModal from "../components/trackModal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ControlSection from "./controls";
 
 function randomId() {
@@ -14,14 +14,21 @@ export default function Browser() {
     const [browserState, browserDispatch] = useBrowserState({
         domain: { chromosome: "chr11", start: 5220000, end: 5420000 },
         width: 1500,
-        tracks: [bigWigExample],
+        tracks: [transcriptExample, bigWigExample, bigBedExample, motifExample],
         highlights: [
         ]
     });
 
-    useMount(() => {
-        browserDispatch({ type: BrowserActionType.ADD_TRACK, track: bigBedExample });
-    });
+    useEffect(() => {
+        if (browserState.domain.end - browserState.domain.start <= 2000) {
+            browserDispatch({ type: BrowserActionType.ADD_TRACK, track: importanceExample });
+            browserDispatch({ type: BrowserActionType.ADD_TRACK, track: phyloPExample });
+        } else {
+            browserDispatch({ type: BrowserActionType.DELETE_TRACK, id: importanceExample.id });
+            browserDispatch({ type: BrowserActionType.DELETE_TRACK, id: phyloPExample.id });
+        }
+    }, [browserState.domain.end - browserState.domain.start])
+
     const [isOpen, setIsOpen] = useState(false);
     return (
         <div className="w-full h-screen">
@@ -31,10 +38,12 @@ export default function Browser() {
             </div>
             <div className="flex flex-col items-center">
                 <ControlSection browserState={browserState} browserDispatch={browserDispatch} setIsOpen={setIsOpen} />
-                <div className="shadow-2xl overflow-hidden">
-                    <GenomeBrowser width={"100%"} browserState={browserState} browserDispatch={browserDispatch}>
-                        <TranscriptTrack {...transcriptExample} />
-                    </GenomeBrowser>
+                <div className="shadow-2xl w-[90%] overflow-hidden">
+                    <GQLWrapper>
+                        <GenomeBrowser width={"100%"} browserState={browserState} browserDispatch={browserDispatch}>
+                            <TranscriptTrack {...transcriptExample} />
+                        </GenomeBrowser>
+                    </GQLWrapper>
                 </div>
             </div>
             <TrackModal
