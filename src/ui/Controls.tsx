@@ -1,144 +1,124 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Search } from "@mui/icons-material";
+import { Paper, Box, Button, IconButton, Typography, useTheme } from "@mui/material";
+import { BrowserStoreInstance, Domain, TrackStoreInstance, Vibrant } from "@weng-lab/genomebrowser";
+import { GenomeSearch, Result } from "@weng-lab/ui-components";
+import ControlButtons from "./DomainButtons";
+import HighlightIcon from "@mui/icons-material/Highlight";
+import HighlightDialog from "./HighlightDialog";
+import { useState } from "react";
+import { expandCoordinates } from "@/utils/coordinates";
 
-import { useCallback } from "react";
-import { BrowserStoreInstance } from "@weng-lab/genomebrowser";
-
-export default function ControlButtons({
+export default function Controls({
   browserStore,
+  trackStore,
 }: {
   browserStore: BrowserStoreInstance;
+  trackStore: TrackStoreInstance;
 }) {
   const domain = browserStore((state) => state.domain);
+  const editTrack = trackStore((state) => state.editTrack);
+  const addHighlight = browserStore((state) => state.addHighlight);
   const setDomain = browserStore((state) => state.setDomain);
+  const [highlightDialogOpen, setHighlightDialogOpen] = useState(false);
+  const theme = useTheme();
 
-  const zoom = useCallback(
-    (factor: number) => {
-      // Calculate new domain width
-      const width = domain.end - domain.start;
-      const newWidth = Math.round(width * factor);
-      const center = Math.round((domain.start + domain.end) / 2);
-
-      // Calculate new start and end based on center point
-      const newStart = Math.max(0, Math.round(center - newWidth / 2));
-      const newEnd = Math.round(center + newWidth / 2);
-
-      // Dispatch with exact coordinates instead of using factor
-      setDomain({
-        ...domain,
-        start: newStart,
-        end: newEnd,
+  const handeSearchSubmit = (r: Result) => {
+    if (r.type === "Gene") {
+      editTrack("gene-track", {
+        geneName: r.title,
       });
-    },
-    [domain, setDomain]
-  );
-
-  const shift = useCallback(
-    (delta: number) => {
-      // Round the delta to ensure consistent integer values
-      const roundedDelta = Math.round(delta);
-      const width = domain.end - domain.start;
-
-      // Ensure we don't go below 0
-      const newStart = Math.max(0, Math.round(domain.start + roundedDelta));
-      const newEnd = Math.round(newStart + width);
-
-      // Dispatch with exact coordinates instead of using delta
-      setDomain({
-        ...domain,
-        start: newStart,
-        end: newEnd,
-      });
-    },
-    [domain, setDomain]
-  );
-
-  // Reusable button group component
-  const ButtonGroup = ({
-    title,
-    buttons,
-  }: {
-    title: string;
-    buttons: {
-      label: string;
-      onClick: (value: number) => void;
-      value: number;
-    }[];
-  }) => (
-    <Box display={"flex"} flexDirection={"row"} alignItems={"center"}>
-      <Typography variant="body2" pr={1}>
-        {title}
-      </Typography>
-      {buttons.map((btn, index) => {
-        return (
-          <Button
-            key={index}
-            variant="outlined"
-            size="small"
-            onClick={() => btn.onClick(btn.value)}
-            title={`${title} ${btn.value.toLocaleString()}`}
-            sx={{
-              padding: "2px 8px",
-              minWidth: "30px",
-              fontSize: "0.8rem",
-            }}
-          >
-            {btn.label}
-          </Button>
-        );
-      })}
-    </Box>
-  );
-
-  const width = domain.end - domain.start;
-
-  // Define button configurations
-  const buttonGroups = [
-    {
-      title: "Move Left",
-      buttons: [
-        { label: "◄◄◄", onClick: shift, value: -width },
-        { label: "◄◄", onClick: shift, value: -Math.round(width / 2) },
-        { label: "◄", onClick: shift, value: -Math.round(width / 4) },
-      ],
-    },
-    {
-      title: "Move Right",
-      buttons: [
-        { label: "►", onClick: shift, value: Math.round(width / 4) },
-        { label: "►►", onClick: shift, value: Math.round(width / 2) },
-        { label: "►►►", onClick: shift, value: width },
-      ],
-    },
-    {
-      title: "Zoom In",
-      buttons: [
-        { label: "1.5x", onClick: zoom, value: 1 / 1.5 },
-        { label: "3x", onClick: zoom, value: 1 / 3 },
-        { label: "10x", onClick: zoom, value: 1 / 10 },
-        { label: "100x", onClick: zoom, value: 1 / 100 },
-      ],
-    },
-    {
-      title: "Zoom Out",
-      buttons: [
-        { label: "-1.5x", onClick: zoom, value: 1.5 },
-        { label: "-3x", onClick: zoom, value: 3 },
-        { label: "-10x", onClick: zoom, value: 10 },
-        { label: "-100x", onClick: zoom, value: 100 },
-      ],
-    },
-  ];
+    }
+    addHighlight({
+      domain: r.domain as Domain,
+      color: highlightColor(r),
+      id: r.title as string,
+    });
+    setDomain(expandCoordinates(r.domain as Domain));
+  };
 
   return (
-    <Box
-      justifyContent={"space-around"}
-      flexDirection={"row"}
-      display={"flex"}
-      width={"100%"}
+    <Paper
+      elevation={5}
+      sx={{
+        paddingInline: 1,
+        paddingBlock: 0.1,
+        mt: 2,
+      }}
     >
-      {buttonGroups.map((group, index) => (
-        <ButtonGroup key={index} title={group.title} buttons={group.buttons} />
-      ))}
-    </Box>
+      <Box
+        display="flex"
+        flexDirection="row"
+        justifyContent="space-between"
+        alignItems="center"
+        sx={{ marginBlock: 2 }}
+      >
+        <Typography variant="h6" fontWeight="bold">
+          {domain.chromosome}:{domain.start.toLocaleString()}-{domain.end.toLocaleString()}
+        </Typography>
+        <Box display="flex" flexDirection="row" gap={2}>
+          <Button
+            variant="contained"
+            startIcon={<HighlightIcon />}
+            size="medium"
+            onClick={() => setHighlightDialogOpen(true)}
+          >
+            Add Track
+          </Button>
+          <Button
+            variant="contained"
+            startIcon={<HighlightIcon />}
+            size="medium"
+            onClick={() => setHighlightDialogOpen(true)}
+          >
+            View Highlights
+          </Button>
+        </Box>
+      </Box>
+      <Box display="flex" justifyContent="space-between" alignItems="center" sx={{ marginBlock: 2 }}>
+        <GenomeSearch
+          size="small"
+          assembly="GRCh38"
+          onSearchSubmit={handeSearchSubmit}
+          queries={["Gene", "SNP", "cCRE", "Coordinate"]}
+          geneLimit={3}
+          sx={{ width: "350px" }}
+          slots={{
+            button: (
+              <IconButton sx={{ color: theme.palette.primary.main }}>
+                <Search />
+              </IconButton>
+            ),
+          }}
+          slotProps={{
+            input: {
+              label: "Change browser region",
+              sx: {
+                backgroundColor: theme.palette.background.paper,
+                borderRadius: "4px",
+                "& label.Mui-focused": {
+                  color: theme.palette.primary.main,
+                },
+                "& .MuiOutlinedInput-root": {
+                  backgroundColor: theme.palette.background.paper,
+                  borderRadius: "4px",
+                  "&.Mui-focused fieldset": {
+                    borderColor: theme.palette.primary.main,
+                  },
+                  "& fieldset": {
+                    borderRadius: "4px",
+                  },
+                },
+              },
+            },
+          }}
+        />
+        <ControlButtons browserStore={browserStore} />
+      </Box>
+      <HighlightDialog browserStore={browserStore} open={highlightDialogOpen} setOpen={setHighlightDialogOpen} />
+    </Paper>
   );
+}
+
+function highlightColor(r: Result) {
+  return Vibrant[4];
 }

@@ -1,13 +1,10 @@
-import {
-  Vibrant,
-  TrackType,
-  DisplayMode,
-  MethylCConfig,
-} from "@weng-lab/genomebrowser";
+import { Vibrant, TrackType, DisplayMode, MethylCConfig } from "@weng-lab/genomebrowser";
 
-// 01 to 15
+// 01 to 15 samples
 export function getMOHDTrack(num: number): MethylCConfig {
+  const URL = "https://users.wenglab.org/mezaj/mohd";
   const id = "EB1000" + num.toString().padStart(2, "0");
+  const path = `${URL}/${id}/${id}`;
   return {
     id: id,
     trackType: TrackType.MethylC,
@@ -25,30 +22,30 @@ export function getMOHDTrack(num: number): MethylCConfig {
     urls: {
       plusStrand: {
         cpg: {
-          url: `https://users.wenglab.org/mezaj/${id}/${id}_cpg_pos.bw`,
+          url: `${path}_cpg_pos.bw`,
         },
         chg: {
-          url: `https://users.wenglab.org/mezaj/${id}/${id}_chg_pos.bw`,
+          url: `${path}_chg_pos.bw`,
         },
         chh: {
-          url: `https://users.wenglab.org/mezaj/${id}/${id}_chh_pos.bw`,
+          url: `${path}_chh_pos.bw`,
         },
         depth: {
-          url: `https://users.wenglab.org/mezaj/${id}/${id}_coverage_pos.bw`,
+          url: `${path}_coverage_pos.bw`,
         },
       },
       minusStrand: {
         cpg: {
-          url: `https://users.wenglab.org/mezaj/${id}/${id}_cpg_neg.bw`,
+          url: `${path}_cpg_neg.bw`,
         },
         chg: {
-          url: `https://users.wenglab.org/mezaj/${id}/${id}_chg_neg.bw`,
+          url: `${path}_chg_neg.bw`,
         },
         chh: {
-          url: `https://users.wenglab.org/mezaj/${id}/${id}_chh_neg.bw`,
+          url: `${path}_chh_neg.bw`,
         },
         depth: {
-          url: `https://users.wenglab.org/mezaj/${id}/${id}_coverage_neg.bw`,
+          url: `${path}_coverage_neg.bw`,
         },
       },
     },
