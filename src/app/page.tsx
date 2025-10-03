@@ -1,7 +1,6 @@
 "use client";
 
-import { bigBedExample, bigWigExample, transcriptExample } from "@/tracks/example";
-import { getMOHDTrack } from "@/tracks/MOHD";
+import { bigBedExample, transcriptExample } from "@/tracks/example";
 import Controls from "@/ui/Controls";
 import { Container, Paper } from "@mui/material";
 import { Browser, createBrowserStore, createTrackStore, GQLWrapper, Transcript, Rect } from "@weng-lab/genomebrowser";
@@ -13,9 +12,9 @@ export default function HomePage() {
     () =>
       createBrowserStore({
         domain: {
-          chromosome: "chr12",
-          start: 3340000,
-          end: 3342000,
+          chromosome: "chr19",
+          start: 44904891,
+          end: 44910293,
         },
         marginWidth: 100,
         trackWidth: 1400,
@@ -25,65 +24,53 @@ export default function HomePage() {
   );
 
   const insertTrack = trackStore((state) => state.insertTrack);
-  const setTracks = trackStore((state) => state.setTracks);
   const addHighlight = browserStore((state) => state.addHighlight);
   const removeHighlight = browserStore((state) => state.removeHighlight);
 
   useEffect(() => {
-    setTracks([
-      {
-        ...transcriptExample,
-        onHover: (item: Transcript) => {
-          addHighlight({
-            id: item.name + "-temp" || "dsadsfd",
-            domain: { start: item.coordinates.start, end: item.coordinates.end },
-            color: item.color || "blue",
-          });
-        },
-        onLeave: (item: Transcript) => {
-          removeHighlight(item.name + "-temp" || "dsadsfd");
-        },
-        onClick: (item: Transcript) => {
-          addHighlight({
-            id: item.name || "dsadsfd",
-            domain: {
-              start: item.coordinates.start,
-              end: item.coordinates.end,
-            },
-            color: item.color || "blue",
-          });
-        },
+    insertTrack({
+      ...transcriptExample,
+      onHover: (item: Transcript) => {
+        addHighlight({
+          id: item.name + "-temp" || "dsadsfd",
+          domain: { start: item.coordinates.start, end: item.coordinates.end },
+          color: item.color || "blue",
+        });
       },
-      {
-        ...bigBedExample,
-        onHover: (rect: Rect) => {
-          addHighlight({
-            id: rect.name + "-temp" || "ihqoviun",
-            domain: { start: rect.start, end: rect.end },
-            color: rect.color || "blue",
-          });
-        },
-        onLeave: (rect: Rect) => {
-          removeHighlight(rect.name + "-temp" || "ihqoviun");
-        },
-        onClick: (rect: Rect) => {
-          addHighlight({
-            id: rect.name || "ihqoviun",
-            domain: { start: rect.start, end: rect.end },
-            color: rect.color || "blue",
-          });
-        },
+      onLeave: (item: Transcript) => {
+        removeHighlight(item.name + "-temp" || "dsadsfd");
       },
-      {
-        ...bigWigExample,
-        url: "https://users.wenglab.org/mezaj/mohd/EB100001/EB100001_coverage_pos.bw",
+      onClick: (item: Transcript) => {
+        addHighlight({
+          id: item.name || "dsadsfd",
+          domain: {
+            start: item.coordinates.start,
+            end: item.coordinates.end,
+          },
+          color: item.color || "blue",
+        });
       },
-    ]);
-
-    for (let i = 1; i <= 1; i++) {
-      const track = getMOHDTrack(i);
-      insertTrack(track);
-    }
+    });
+    insertTrack({
+      ...bigBedExample,
+      onHover: (rect: Rect) => {
+        addHighlight({
+          id: rect.name + "-temp" || "ihqoviun",
+          domain: { start: rect.start, end: rect.end },
+          color: rect.color || "blue",
+        });
+      },
+      onLeave: (rect: Rect) => {
+        removeHighlight(rect.name + "-temp" || "ihqoviun");
+      },
+      onClick: (rect: Rect) => {
+        addHighlight({
+          id: rect.name || "ihqoviun",
+          domain: { start: rect.start, end: rect.end },
+          color: rect.color || "blue",
+        });
+      },
+    });
   }, []);
 
   return (

@@ -1,10 +1,11 @@
-import { Search } from "@mui/icons-material";
+import { Search, LibraryAdd } from "@mui/icons-material";
 import { Paper, Box, Button, IconButton, Typography, useTheme } from "@mui/material";
 import { BrowserStoreInstance, Domain, TrackStoreInstance, Vibrant } from "@weng-lab/genomebrowser";
 import { GenomeSearch, Result } from "@weng-lab/ui-components";
 import ControlButtons from "./DomainButtons";
 import HighlightIcon from "@mui/icons-material/Highlight";
 import HighlightDialog from "./HighlightDialog";
+import MOHDDialog from "./MOHDDialog";
 import { useState } from "react";
 import { expandCoordinates } from "@/utils/coordinates";
 
@@ -20,6 +21,7 @@ export default function Controls({
   const addHighlight = browserStore((state) => state.addHighlight);
   const setDomain = browserStore((state) => state.setDomain);
   const [highlightDialogOpen, setHighlightDialogOpen] = useState(false);
+  const [mohdDialogOpen, setMohdDialogOpen] = useState(false);
   const theme = useTheme();
 
   const handeSearchSubmit = (r: Result) => {
@@ -58,9 +60,9 @@ export default function Controls({
         <Box display="flex" flexDirection="row" gap={2}>
           <Button
             variant="contained"
-            startIcon={<HighlightIcon />}
+            startIcon={<LibraryAdd />}
             size="medium"
-            onClick={() => setHighlightDialogOpen(true)}
+            onClick={() => setMohdDialogOpen(true)}
           >
             Add Track
           </Button>
@@ -115,6 +117,7 @@ export default function Controls({
         <ControlButtons browserStore={browserStore} />
       </Box>
       <HighlightDialog browserStore={browserStore} open={highlightDialogOpen} setOpen={setHighlightDialogOpen} />
+      <MOHDDialog trackStore={trackStore} open={mohdDialogOpen} setOpen={setMohdDialogOpen} />
     </Paper>
   );
 }
